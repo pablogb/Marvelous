@@ -1,0 +1,6 @@
+framework module Pods_Marvelous {
+  umbrella header "Pods-Marvelous-umbrella.h"
+
+  export *
+  module * { export * }
+}
