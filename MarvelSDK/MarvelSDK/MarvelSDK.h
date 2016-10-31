@@ -15,5 +15,3 @@ FOUNDATION_EXPORT double MarvelSDKVersionNumber;
 FOUNDATION_EXPORT const unsigned char MarvelSDKVersionString[];
 
 // In this header, you should import all the public headers of your framework using statements like #import <MarvelSDK/PublicHeader.h>
-
-

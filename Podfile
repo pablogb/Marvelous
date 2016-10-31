@@ -13,6 +13,7 @@ target 'Marvelous' do
   pod 'Alamofire', '~> 3.5'
   pod 'SwiftyJSON', '~> 2.4'
   pod 'SDWebImage', '~> 3.8'
+  pod 'CryptoSwift', :git => "https://github.com/krzyzanowskim/CryptoSwift", :branch => "swift2"
 
   target 'MarvelousTests' do
     inherit! :search_paths
@@ -31,6 +32,7 @@ target 'MarvelSDK' do
 
   pod 'Alamofire', '~> 3.5'
   pod 'SwiftyJSON', '~> 2.4'
+  pod 'CryptoSwift', :git => "https://github.com/krzyzanowskim/CryptoSwift", :branch => "swift2"
 
   target 'MarvelSDKTests' do
     inherit! :search_paths

@@ -1,5 +1,6 @@
 PODS:
   - Alamofire (3.5.1)
+  - CryptoSwift (0.5.2)
   - SDWebImage (3.8.2):
     - SDWebImage/Core (= 3.8.2)
   - SDWebImage/Core (3.8.2)
@@ -7,14 +8,26 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 3.5)
+  - CryptoSwift (from `https://github.com/krzyzanowskim/CryptoSwift`, branch `swift2`)
   - SDWebImage (~> 3.8)
   - SwiftyJSON (~> 2.4)
 
+EXTERNAL SOURCES:
+  CryptoSwift:
+    :branch: swift2
+    :git: https://github.com/krzyzanowskim/CryptoSwift
+
+CHECKOUT OPTIONS:
+  CryptoSwift:
+    :commit: 03a745bb6533ed97b055c1a2883be2b542a50252
+    :git: https://github.com/krzyzanowskim/CryptoSwift
+
 SPEC CHECKSUMS:
   Alamofire: 0dfba1184a543e2aa160f4e39cac4e8aba48d223
+  CryptoSwift: c1ef79f901b86099a6fe8b3c7524cf9f3f3c8c40
   SDWebImage: 098e97e6176540799c27e804c96653ee0833d13c
   SwiftyJSON: 96918c1bf505efa50c4f72957018dd3452090c9c
 
-PODFILE CHECKSUM: ec2143e681aed253c3a9d7eae67db108014c6f00
+PODFILE CHECKSUM: af797b1161fb263f57b25a9789851c31e4285ee3
 
 COCOAPODS: 1.0.1

@@ -13,6 +13,13 @@
 		CB2C570E1DC6566900CA6CE5 /* MarvelSDKTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB2C570D1DC6566900CA6CE5 /* MarvelSDKTests.swift */; };
 		CB2C57101DC6566900CA6CE5 /* MarvelSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = CB2C57021DC6566900CA6CE5 /* MarvelSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB2C57491DC657A900CA6CE5 /* MarvelSDK.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB2C57481DC657A900CA6CE5 /* MarvelSDK.swift */; };
+		CB2C57621DC6B65400CA6CE5 /* ResponseCache.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = CB2C57601DC6B65400CA6CE5 /* ResponseCache.xcdatamodeld */; };
+		CB2C57641DC6B6A300CA6CE5 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB2C57631DC6B6A300CA6CE5 /* CoreDataStack.swift */; };
+		CB2C57741DC6BC1D00CA6CE5 /* CachedResponse+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB2C57701DC6BC1D00CA6CE5 /* CachedResponse+CoreDataClass.swift */; };
+		CB2C57751DC6BC1D00CA6CE5 /* CachedResponse+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB2C57711DC6BC1D00CA6CE5 /* CachedResponse+CoreDataProperties.swift */; };
+		CB2C57771DC6BF4A00CA6CE5 /* DataTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB2C57761DC6BF4A00CA6CE5 /* DataTypes.swift */; };
+		CB2C57821DC70FE300CA6CE5 /* MarvelCharacter+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB2C57801DC70FE200CA6CE5 /* MarvelCharacter+CoreDataClass.swift */; };
+		CB2C57831DC70FE300CA6CE5 /* MarvelCharacter+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB2C57811DC70FE300CA6CE5 /* MarvelCharacter+CoreDataProperties.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,6 +45,13 @@
 		CB2C570D1DC6566900CA6CE5 /* MarvelSDKTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarvelSDKTests.swift; sourceTree = "<group>"; };
 		CB2C570F1DC6566900CA6CE5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CB2C57481DC657A900CA6CE5 /* MarvelSDK.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarvelSDK.swift; sourceTree = "<group>"; };
+		CB2C57611DC6B65400CA6CE5 /* ResponseCache.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ResponseCache.xcdatamodel; sourceTree = "<group>"; };
+		CB2C57631DC6B6A300CA6CE5 /* CoreDataStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
+		CB2C57701DC6BC1D00CA6CE5 /* CachedResponse+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "CachedResponse+CoreDataClass.swift"; path = "CoreData Models/CachedResponse+CoreDataClass.swift"; sourceTree = "<group>"; };
+		CB2C57711DC6BC1D00CA6CE5 /* CachedResponse+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "CachedResponse+CoreDataProperties.swift"; path = "CoreData Models/CachedResponse+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		CB2C57761DC6BF4A00CA6CE5 /* DataTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataTypes.swift; sourceTree = "<group>"; };
+		CB2C57801DC70FE200CA6CE5 /* MarvelCharacter+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "MarvelCharacter+CoreDataClass.swift"; path = "CoreData Models/MarvelCharacter+CoreDataClass.swift"; sourceTree = "<group>"; };
+		CB2C57811DC70FE300CA6CE5 /* MarvelCharacter+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "MarvelCharacter+CoreDataProperties.swift"; path = "CoreData Models/MarvelCharacter+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		F6E7F6A094701649E1670D0D /* Pods-MarvelSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MarvelSDK.release.xcconfig"; path = "../Pods/Target Support Files/Pods-MarvelSDK/Pods-MarvelSDK.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -105,8 +119,12 @@
 		CB2C57011DC6566900CA6CE5 /* MarvelSDK */ = {
 			isa = PBXGroup;
 			children = (
+				CB2C57631DC6B6A300CA6CE5 /* CoreDataStack.swift */,
 				CB2C57021DC6566900CA6CE5 /* MarvelSDK.h */,
 				CB2C57481DC657A900CA6CE5 /* MarvelSDK.swift */,
+				CB2C57601DC6B65400CA6CE5 /* ResponseCache.xcdatamodeld */,
+				CB2C57761DC6BF4A00CA6CE5 /* DataTypes.swift */,
+				CB2C576D1DC6BBA900CA6CE5 /* CoreData Models */,
 				CB2C57031DC6566900CA6CE5 /* Info.plist */,
 			);
 			path = MarvelSDK;
@@ -119,6 +137,17 @@
 				CB2C570F1DC6566900CA6CE5 /* Info.plist */,
 			);
 			path = MarvelSDKTests;
+			sourceTree = "<group>";
+		};
+		CB2C576D1DC6BBA900CA6CE5 /* CoreData Models */ = {
+			isa = PBXGroup;
+			children = (
+				CB2C57801DC70FE200CA6CE5 /* MarvelCharacter+CoreDataClass.swift */,
+				CB2C57811DC70FE300CA6CE5 /* MarvelCharacter+CoreDataProperties.swift */,
+				CB2C57701DC6BC1D00CA6CE5 /* CachedResponse+CoreDataClass.swift */,
+				CB2C57711DC6BC1D00CA6CE5 /* CachedResponse+CoreDataProperties.swift */,
+			);
+			name = "CoreData Models";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -317,7 +346,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB2C57831DC70FE300CA6CE5 /* MarvelCharacter+CoreDataProperties.swift in Sources */,
+				CB2C57641DC6B6A300CA6CE5 /* CoreDataStack.swift in Sources */,
+				CB2C57741DC6BC1D00CA6CE5 /* CachedResponse+CoreDataClass.swift in Sources */,
+				CB2C57771DC6BF4A00CA6CE5 /* DataTypes.swift in Sources */,
+				CB2C57621DC6B65400CA6CE5 /* ResponseCache.xcdatamodeld in Sources */,
 				CB2C57491DC657A900CA6CE5 /* MarvelSDK.swift in Sources */,
+				CB2C57821DC70FE300CA6CE5 /* MarvelCharacter+CoreDataClass.swift in Sources */,
+				CB2C57751DC6BC1D00CA6CE5 /* CachedResponse+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -456,6 +492,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.shiftingmind.MarvelSDK;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 2.3;
 			};
@@ -478,6 +515,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.shiftingmind.MarvelSDK;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 2.3;
 			};
 			name = Release;
@@ -541,6 +579,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		CB2C57601DC6B65400CA6CE5 /* ResponseCache.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				CB2C57611DC6B65400CA6CE5 /* ResponseCache.xcdatamodel */,
+			);
+			currentVersion = CB2C57611DC6B65400CA6CE5 /* ResponseCache.xcdatamodel */;
+			path = ResponseCache.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = CB2C56F61DC6566900CA6CE5 /* Project object */;
 }
