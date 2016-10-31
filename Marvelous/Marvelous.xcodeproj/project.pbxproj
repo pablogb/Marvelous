@@ -10,13 +10,15 @@
 		7393DBF55A1AA7EA7AB42697 /* Pods_Marvelous.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A16934E2F20157E98299A840 /* Pods_Marvelous.framework */; };
 		B38325469523629BF4587F75 /* Pods_MarvelousTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90E11559C87A685A721EB6D7 /* Pods_MarvelousTests.framework */; };
 		CB2C57261DC656AA00CA6CE5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB2C57251DC656AA00CA6CE5 /* AppDelegate.swift */; };
-		CB2C57281DC656AA00CA6CE5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB2C57271DC656AA00CA6CE5 /* ViewController.swift */; };
 		CB2C572B1DC656AA00CA6CE5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CB2C57291DC656AA00CA6CE5 /* Main.storyboard */; };
 		CB2C57301DC656AA00CA6CE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CB2C572F1DC656AA00CA6CE5 /* Assets.xcassets */; };
 		CB2C57331DC656AA00CA6CE5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CB2C57311DC656AA00CA6CE5 /* LaunchScreen.storyboard */; };
 		CB2C573E1DC656AA00CA6CE5 /* MarvelousTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB2C573D1DC656AA00CA6CE5 /* MarvelousTests.swift */; };
 		CB2C574B1DC657F500CA6CE5 /* MarvelSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB2C574A1DC657F500CA6CE5 /* MarvelSDK.framework */; };
 		CB2C574C1DC657F500CA6CE5 /* MarvelSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CB2C574A1DC657F500CA6CE5 /* MarvelSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CB2C574F1DC663FA00CA6CE5 /* PrivateConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB2C574E1DC663FA00CA6CE5 /* PrivateConstants.swift */; };
+		CB2C577D1DC70CAA00CA6CE5 /* CharacterListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB2C577C1DC70CAA00CA6CE5 /* CharacterListViewController.swift */; };
+		CB2C577F1DC70CEB00CA6CE5 /* CollectionViewCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB2C577E1DC70CEB00CA6CE5 /* CollectionViewCells.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,7 +50,6 @@
 		A16934E2F20157E98299A840 /* Pods_Marvelous.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Marvelous.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB2C57221DC656AA00CA6CE5 /* Marvelous.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Marvelous.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB2C57251DC656AA00CA6CE5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		CB2C57271DC656AA00CA6CE5 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		CB2C572A1DC656AA00CA6CE5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		CB2C572F1DC656AA00CA6CE5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CB2C57321DC656AA00CA6CE5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -57,6 +58,9 @@
 		CB2C573D1DC656AA00CA6CE5 /* MarvelousTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarvelousTests.swift; sourceTree = "<group>"; };
 		CB2C573F1DC656AA00CA6CE5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CB2C574A1DC657F500CA6CE5 /* MarvelSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MarvelSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB2C574E1DC663FA00CA6CE5 /* PrivateConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateConstants.swift; sourceTree = "<group>"; };
+		CB2C577C1DC70CAA00CA6CE5 /* CharacterListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CharacterListViewController.swift; sourceTree = "<group>"; };
+		CB2C577E1DC70CEB00CA6CE5 /* CollectionViewCells.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionViewCells.swift; sourceTree = "<group>"; };
 		D5F201FBD422653D2F8DFBCA /* Pods-MarvelousTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MarvelousTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-MarvelousTests/Pods-MarvelousTests.release.xcconfig"; sourceTree = "<group>"; };
 		D879ACAA2AD01A1FE93294F3 /* Pods-Marvelous.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Marvelous.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Marvelous/Pods-Marvelous.release.xcconfig"; sourceTree = "<group>"; };
 		D98EC150B6DE9E3CC9C053DF /* Pods-MarvelousTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MarvelousTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-MarvelousTests/Pods-MarvelousTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -128,8 +132,10 @@
 		CB2C57241DC656AA00CA6CE5 /* Marvelous */ = {
 			isa = PBXGroup;
 			children = (
+				CB2C574E1DC663FA00CA6CE5 /* PrivateConstants.swift */,
 				CB2C57251DC656AA00CA6CE5 /* AppDelegate.swift */,
-				CB2C57271DC656AA00CA6CE5 /* ViewController.swift */,
+				CB2C577C1DC70CAA00CA6CE5 /* CharacterListViewController.swift */,
+				CB2C577E1DC70CEB00CA6CE5 /* CollectionViewCells.swift */,
 				CB2C57291DC656AA00CA6CE5 /* Main.storyboard */,
 				CB2C572F1DC656AA00CA6CE5 /* Assets.xcassets */,
 				CB2C57311DC656AA00CA6CE5 /* LaunchScreen.storyboard */,
@@ -352,7 +358,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CB2C57281DC656AA00CA6CE5 /* ViewController.swift in Sources */,
+				CB2C574F1DC663FA00CA6CE5 /* PrivateConstants.swift in Sources */,
+				CB2C577D1DC70CAA00CA6CE5 /* CharacterListViewController.swift in Sources */,
+				CB2C577F1DC70CEB00CA6CE5 /* CollectionViewCells.swift in Sources */,
 				CB2C57261DC656AA00CA6CE5 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

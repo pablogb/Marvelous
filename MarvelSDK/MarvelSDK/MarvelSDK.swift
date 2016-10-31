@@ -35,7 +35,7 @@ public class MarvelSDK {
      */
     public static let sharedInstance = MarvelSDK()
     
-    func makeAPICall(entityType:EntityType, path:String, parameters:[String: AnyObject]?, completionHandler: (statusCode:Int?, json:JSON?, error:ErrorType?, cachedResponse:CachedResponse?) -> Void) {
+    func makeAPICall(entityType:EntityType, path:String, parameters:[String: AnyObject]?, shouldCache:Bool = true, completionHandler: (statusCode:Int?, json:JSON?, error:ErrorType?, cachedResponse:CachedResponse?) -> Void) {
         
         var parameters:[String: AnyObject]! = parameters
         if parameters == nil { parameters = [:] }
@@ -45,8 +45,11 @@ public class MarvelSDK {
         for (key, value) in parameters {
             parameterString += "\(key):\(value)"
         }
-
-        var cached = cachedResponse(forPath: path, parameters: parameterString)
+        
+        var cached:CachedResponse? = nil
+        if shouldCache {
+            cached = cachedResponse(forPath: path, parameters: parameterString)
+        }
         
         var headers:[String : String]?
         
@@ -85,16 +88,18 @@ public class MarvelSDK {
                 if let data = response.result.value {
                     let json = JSON(data)
                     
-                    cached?.invalidate()
-                    
-                    let moc = CoreDataStack.sharedStack.context
-                    
-                    cached = CachedResponse(entity: CachedResponse.entity(), insertIntoManagedObjectContext: moc)
-                    cached!.path = path
-                    cached!.parameters = parameterString
-                    cached!.cacheDate = now
-                    cached!.entityType = entityType.rawValue
-                    cached!.etag = json["etag"].string
+                    if shouldCache {
+                        cached?.invalidate()
+                        
+                        let moc = CoreDataStack.sharedStack.context
+                        
+                        cached = CachedResponse(entity: CachedResponse.entity(), insertIntoManagedObjectContext: moc)
+                        cached!.path = path
+                        cached!.parameters = parameterString
+                        cached!.cacheDate = now
+                        cached!.entityType = entityType.rawValue
+                        cached!.etag = json["etag"].string
+                    }
                     
                     print("new data returned")
                     completionHandler(statusCode: 200, json: json, error: nil, cachedResponse: cached)
@@ -129,12 +134,16 @@ public class MarvelSDK {
     
     public func characters(limit limit:Int?, offset:Int?, nameStartsWith:String?, completionHandler: (error:MarvelSDKError?, characters:[MarvelCharacter]) -> Void) {
         var parameters = [String: AnyObject]()
+        var shouldCache = true
         
         if let limit = limit { parameters["limit"] = limit }
         if let offset = offset { parameters["offset"] = offset }
-        if let nameStartsWith = nameStartsWith { parameters["nameStartsWith"] = nameStartsWith }
+        if let nameStartsWith = nameStartsWith {
+            parameters["nameStartsWith"] = nameStartsWith
+            shouldCache = false
+        }
         
-        makeAPICall(.MarvelCharacter, path: "characters", parameters: parameters) { (statusCode, json, error, cachedResponse) in
+        makeAPICall(.MarvelCharacter, path: "characters", parameters: parameters, shouldCache: shouldCache) { (statusCode, json, error, cachedResponse) in
             if statusCode != 200 && cachedResponse == nil {
                 // An error occured and no data was returned (not even cached data).
                 let error:MarvelSDKError!
@@ -155,7 +164,7 @@ public class MarvelSDK {
                     let character = MarvelCharacter(entity: MarvelCharacter.entity(), insertIntoManagedObjectContext: moc)
                     character.populateFromJSON(characterJSON as! JSON)
                     character.cachedOrder = Int16(index)
-                    character.cachedResponse = cachedResponse!
+                    character.cachedResponse = cachedResponse
                     
                     characters.append(character)
                 }
@@ -178,6 +187,37 @@ public class MarvelSDK {
                     completionHandler(error: .InternalError, characters: [])
                 }
             }
+        }
+    }
+    
+    public func filteredCharactersFromCache(searchText searchText:String) -> [MarvelCharacter] {
+        let fetchRequest = NSFetchRequest(entityName: "MarvelCharacter") as NSFetchRequest
+        
+        // Generate predicate for word-by-word search.
+        let words = searchText.componentsSeparatedByString(" ")
+        
+        var format = "cachedResponse != nil "
+        var arguments:[String] = []
+        for (index, word) in words.enumerate() {
+            if word != "" {
+                format += "AND %K CONTAINS[cd] %@"
+                
+                arguments.append("name")
+                arguments.append(word)
+            }
+        }
+        
+        let predicate = NSPredicate(format: format, argumentArray: arguments)
+        fetchRequest.predicate = predicate
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+        fetchRequest.fetchLimit = 3
+                
+        do {
+            let fetchedObjects = try CoreDataStack.sharedStack.context.executeFetchRequest(fetchRequest)
+            return (fetchedObjects as? [MarvelCharacter]) ?? []
+        } catch let error as NSError {
+            print("Could not fetch results: \(error)")
+            return []
         }
     }
 }
