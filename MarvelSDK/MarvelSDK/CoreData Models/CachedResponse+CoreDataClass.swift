@@ -11,6 +11,7 @@ import CoreData
 
 enum EntityType: String {
     case MarvelCharacter = "MarvelCharacter"
+    case MarvelEntity = "MarvelEntity"
 }
 
 @objc(CachedResponse)

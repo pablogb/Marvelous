@@ -11,7 +11,16 @@
         <attribute name="cachedOrder" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="desc" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="marvelId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="modified" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="resourceURI" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="thumbnailBase" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="thumbnailExtension" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="urls" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <relationship name="cachedResponse" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CachedResponse" syncable="YES"/>
+    </entity>
+    <entity name="MarvelEntity" representedClassName="MarvelEntity" syncable="YES">
+        <attribute name="cachedOrder" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="marvelId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="resourceURI" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="thumbnailBase" optional="YES" attributeType="String" syncable="YES"/>
@@ -21,6 +30,7 @@
     </entity>
     <elements>
         <element name="CachedResponse" positionX="-63" positionY="-18" width="128" height="120"/>
-        <element name="MarvelCharacter" positionX="-54" positionY="-9" width="128" height="195"/>
+        <element name="MarvelCharacter" positionX="-54" positionY="-9" width="128" height="180"/>
+        <element name="MarvelEntity" positionX="-63" positionY="72" width="128" height="165"/>
     </elements>
 </model>

@@ -43,6 +43,15 @@ class CharacterListViewController: UIViewController {
         
     }
     
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "showCharacterDetail" {
+            let character = sender as? MarvelCharacter
+            let destination = segue.destinationViewController as! CharacterDetailViewController
+            
+            destination.character = character
+        }
+    }
+    
     func loadNextCharacters() {
         
         if loadingNext == false {
@@ -64,9 +73,7 @@ class CharacterListViewController: UIViewController {
                     
                     vc.characters.appendContentsOf(characters)
                     
-                    dispatch_async(dispatch_get_main_queue(), { 
-                        //vc.collectionView?.reloadData()
-                        
+                    dispatch_async(dispatch_get_main_queue(), {
                         var indexPaths:[NSIndexPath] = []
                         
                         for (index, _) in characters.enumerate() {
@@ -104,37 +111,51 @@ extension CharacterListViewController: UICollectionViewDelegate, UICollectionVie
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+        
+        let character = characterFor(indexPath: indexPath)
+        if let character = character { // Return entity cell.
+            let cell = collectionView.dequeueReusableCellWithReuseIdentifier("entityCell", forIndexPath: indexPath) as! EntityCollectionViewCell
+            
+            cell.configure(entity: character)
+            
+            return cell
+        } else { // Return Loading cell.
+            let cell = collectionView.dequeueReusableCellWithReuseIdentifier("loadingCell", forIndexPath: indexPath) as! LoadingCollectionViewCell
+            cell.activityIndicator.startAnimating()
+            
+            if filteredCharacters == nil { // If this is the end of page loading cell, then start loading the next page.
+                loadNextCharacters()
+            }
+            
+            return cell
+        }
+    }
+    
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        collectionView.deselectItemAtIndexPath(indexPath, animated: true)
+
+        // Do nothing if the user selected a loading cell.
+        if let character = characterFor(indexPath: indexPath) {
+            performSegueWithIdentifier("showCharacterDetail", sender: character)
+        }
+    }
+    
+    func characterFor(indexPath indexPath:NSIndexPath) -> MarvelCharacter? {
         if let filteredCharacters = filteredCharacters {
             var arrayIndex = indexPath.row
             if searching {
                 arrayIndex -= 1
             }
             if arrayIndex < 0 { // Display loading cell.
-                let cell = collectionView.dequeueReusableCellWithReuseIdentifier("loadingCell", forIndexPath: indexPath) as! LoadingCollectionViewCell
-                cell.activityIndicator.startAnimating()
-                
-                return cell
+                return nil
             } else { // Display character cell
-                let cell = collectionView.dequeueReusableCellWithReuseIdentifier("characterCell", forIndexPath: indexPath) as! CharacterCollectionViewCell
-                
-                cell.configure(character: filteredCharacters[arrayIndex])
-                
-                return cell
+                return filteredCharacters[arrayIndex]
             }
-            
         } else {
             if indexPath.row == characters.count { // Display loading cell.
-                let cell = collectionView.dequeueReusableCellWithReuseIdentifier("loadingCell", forIndexPath: indexPath) as! LoadingCollectionViewCell
-                cell.activityIndicator.startAnimating()
-                loadNextCharacters()
-                
-                return cell
-            } else { // Display character cell
-                let cell = collectionView.dequeueReusableCellWithReuseIdentifier("characterCell", forIndexPath: indexPath) as! CharacterCollectionViewCell
-                
-                cell.configure(character: characters[indexPath.row])
-                
-                return cell
+                return nil
+            } else { // Display entitiy cell
+                return characters[indexPath.row]
             }
         }
     }

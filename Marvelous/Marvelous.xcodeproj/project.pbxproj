@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		7393DBF55A1AA7EA7AB42697 /* Pods_Marvelous.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A16934E2F20157E98299A840 /* Pods_Marvelous.framework */; };
 		B38325469523629BF4587F75 /* Pods_MarvelousTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90E11559C87A685A721EB6D7 /* Pods_MarvelousTests.framework */; };
+		CB2BC4C61DC7FD1800532A61 /* CharacterDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB2BC4C51DC7FD1800532A61 /* CharacterDetailViewController.swift */; };
+		CB2BC4C81DC7FFC600532A61 /* MarvelEntityListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB2BC4C71DC7FFC600532A61 /* MarvelEntityListViewController.swift */; };
 		CB2C57261DC656AA00CA6CE5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB2C57251DC656AA00CA6CE5 /* AppDelegate.swift */; };
 		CB2C572B1DC656AA00CA6CE5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CB2C57291DC656AA00CA6CE5 /* Main.storyboard */; };
 		CB2C57301DC656AA00CA6CE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CB2C572F1DC656AA00CA6CE5 /* Assets.xcassets */; };
@@ -48,6 +50,8 @@
 /* Begin PBXFileReference section */
 		90E11559C87A685A721EB6D7 /* Pods_MarvelousTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MarvelousTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A16934E2F20157E98299A840 /* Pods_Marvelous.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Marvelous.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB2BC4C51DC7FD1800532A61 /* CharacterDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CharacterDetailViewController.swift; sourceTree = "<group>"; };
+		CB2BC4C71DC7FFC600532A61 /* MarvelEntityListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarvelEntityListViewController.swift; sourceTree = "<group>"; };
 		CB2C57221DC656AA00CA6CE5 /* Marvelous.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Marvelous.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB2C57251DC656AA00CA6CE5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CB2C572A1DC656AA00CA6CE5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -135,6 +139,8 @@
 				CB2C574E1DC663FA00CA6CE5 /* PrivateConstants.swift */,
 				CB2C57251DC656AA00CA6CE5 /* AppDelegate.swift */,
 				CB2C577C1DC70CAA00CA6CE5 /* CharacterListViewController.swift */,
+				CB2BC4C51DC7FD1800532A61 /* CharacterDetailViewController.swift */,
+				CB2BC4C71DC7FFC600532A61 /* MarvelEntityListViewController.swift */,
 				CB2C577E1DC70CEB00CA6CE5 /* CollectionViewCells.swift */,
 				CB2C57291DC656AA00CA6CE5 /* Main.storyboard */,
 				CB2C572F1DC656AA00CA6CE5 /* Assets.xcassets */,
@@ -358,9 +364,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB2BC4C61DC7FD1800532A61 /* CharacterDetailViewController.swift in Sources */,
 				CB2C574F1DC663FA00CA6CE5 /* PrivateConstants.swift in Sources */,
 				CB2C577D1DC70CAA00CA6CE5 /* CharacterListViewController.swift in Sources */,
 				CB2C577F1DC70CEB00CA6CE5 /* CollectionViewCells.swift in Sources */,
+				CB2BC4C81DC7FFC600532A61 /* MarvelEntityListViewController.swift in Sources */,
 				CB2C57261DC656AA00CA6CE5 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

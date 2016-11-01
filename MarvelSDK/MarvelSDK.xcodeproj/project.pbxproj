@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		128E74021A0F0480DF0D4AA6 /* Pods_MarvelSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6085DC9DE250DF6569C96A82 /* Pods_MarvelSDK.framework */; };
 		33F6328B4BA04A358FADC30B /* Pods_MarvelSDKTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B2D3B79497A21ADF6A8950D /* Pods_MarvelSDKTests.framework */; };
+		CB2BC4CB1DC8013900532A61 /* MarvelEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB2BC4C91DC8013900532A61 /* MarvelEntity+CoreDataClass.swift */; };
+		CB2BC4CC1DC8013900532A61 /* MarvelEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB2BC4CA1DC8013900532A61 /* MarvelEntity+CoreDataProperties.swift */; };
 		CB2C57091DC6566900CA6CE5 /* MarvelSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB2C56FF1DC6566900CA6CE5 /* MarvelSDK.framework */; };
 		CB2C570E1DC6566900CA6CE5 /* MarvelSDKTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB2C570D1DC6566900CA6CE5 /* MarvelSDKTests.swift */; };
 		CB2C57101DC6566900CA6CE5 /* MarvelSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = CB2C57021DC6566900CA6CE5 /* MarvelSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -38,6 +40,8 @@
 		46BDDF25010B4D07DDEC1C52 /* Pods-MarvelSDKTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MarvelSDKTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-MarvelSDKTests/Pods-MarvelSDKTests.release.xcconfig"; sourceTree = "<group>"; };
 		6085DC9DE250DF6569C96A82 /* Pods_MarvelSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MarvelSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		71A552E6E212473DE9F84EDD /* Pods-MarvelSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MarvelSDK.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-MarvelSDK/Pods-MarvelSDK.debug.xcconfig"; sourceTree = "<group>"; };
+		CB2BC4C91DC8013900532A61 /* MarvelEntity+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "MarvelEntity+CoreDataClass.swift"; path = "CoreData Models/MarvelEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
+		CB2BC4CA1DC8013900532A61 /* MarvelEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "MarvelEntity+CoreDataProperties.swift"; path = "CoreData Models/MarvelEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		CB2C56FF1DC6566900CA6CE5 /* MarvelSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MarvelSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB2C57021DC6566900CA6CE5 /* MarvelSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MarvelSDK.h; sourceTree = "<group>"; };
 		CB2C57031DC6566900CA6CE5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -142,6 +146,8 @@
 		CB2C576D1DC6BBA900CA6CE5 /* CoreData Models */ = {
 			isa = PBXGroup;
 			children = (
+				CB2BC4C91DC8013900532A61 /* MarvelEntity+CoreDataClass.swift */,
+				CB2BC4CA1DC8013900532A61 /* MarvelEntity+CoreDataProperties.swift */,
 				CB2C57801DC70FE200CA6CE5 /* MarvelCharacter+CoreDataClass.swift */,
 				CB2C57811DC70FE300CA6CE5 /* MarvelCharacter+CoreDataProperties.swift */,
 				CB2C57701DC6BC1D00CA6CE5 /* CachedResponse+CoreDataClass.swift */,
@@ -350,8 +356,10 @@
 				CB2C57641DC6B6A300CA6CE5 /* CoreDataStack.swift in Sources */,
 				CB2C57741DC6BC1D00CA6CE5 /* CachedResponse+CoreDataClass.swift in Sources */,
 				CB2C57771DC6BF4A00CA6CE5 /* DataTypes.swift in Sources */,
+				CB2BC4CB1DC8013900532A61 /* MarvelEntity+CoreDataClass.swift in Sources */,
 				CB2C57621DC6B65400CA6CE5 /* ResponseCache.xcdatamodeld in Sources */,
 				CB2C57491DC657A900CA6CE5 /* MarvelSDK.swift in Sources */,
+				CB2BC4CC1DC8013900532A61 /* MarvelEntity+CoreDataProperties.swift in Sources */,
 				CB2C57821DC70FE300CA6CE5 /* MarvelCharacter+CoreDataClass.swift in Sources */,
 				CB2C57751DC6BC1D00CA6CE5 /* CachedResponse+CoreDataProperties.swift in Sources */,
 			);

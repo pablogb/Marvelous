@@ -176,7 +176,7 @@ public class MarvelSDK {
                 completionHandler(error: nil, entities: entities)
             } else if let cachedResponse = cachedResponse {
                 // No new data, but we can retrive the results from the cached response.
-                let fetchRequest = NSFetchRequest(entityName: "MarvelCharacter") as NSFetchRequest
+                let fetchRequest = NSFetchRequest(entityName: entityType.rawValue) as NSFetchRequest
                 fetchRequest.predicate = NSPredicate(format: "cachedResponse = %@", cachedResponse)
                 fetchRequest.sortDescriptors = [NSSortDescriptor(key: "cachedOrder", ascending: true)]
                 

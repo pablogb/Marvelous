@@ -15,8 +15,8 @@ public enum MarvelSDKError {
 }
 
 public class LabeledURL: NSObject, NSCoding {
-    var url:NSURL
-    var label:String
+    public var url:NSURL
+    public var label:String
     
     public init(url: NSURL, label: String) {
         self.url = url

@@ -16,7 +16,7 @@ public class MarvelEntity: NSManagedObject {
     func populateFromJSON(json:JSON) {
         marvelId = json["id"].int64Value
         
-        name = json["name"].string
+        name = json["title"].string
         
         resourceURI = json["resourceURI"].string
         
@@ -46,5 +46,20 @@ public class MarvelEntity: NSManagedObject {
     public func detailThumbURL() -> NSURL? {
         if thumbnailBase == nil || thumbnailExtension == nil { return nil}
         else { return NSURL(string: "\(thumbnailBase!)/detail.\(thumbnailExtension!)") }
+    }
+    
+    public func detailURL() -> NSURL? {
+        let labeledURLs = urls as? [LabeledURL]
+        var detailURL:NSURL?
+        
+        if let labeledURLs = labeledURLs {
+            for labeledURL in labeledURLs {
+                // Any URL works, but try to find the detail url.
+                detailURL = labeledURL.url
+                if labeledURL.label == "detail" { break }
+            }
+        }
+        
+        return detailURL
     }
 }

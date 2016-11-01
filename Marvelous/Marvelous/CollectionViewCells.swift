@@ -10,13 +10,13 @@ import UIKit
 import SDWebImage
 import MarvelSDK
 
-class CharacterCollectionViewCell: UICollectionViewCell {
+class EntityCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var imageView:UIImageView!
     @IBOutlet weak var nameLabel:UILabel!
     
-    func configure(character character:MarvelCharacter) {
-        nameLabel.text = character.name
-        imageView.sd_setImageWithURL(character.squareThumbURL())
+    func configure(entity entity:MarvelEntity) {
+        nameLabel.text = entity.name
+        imageView.sd_setImageWithURL(entity.squareThumbURL())
     }
 }
 

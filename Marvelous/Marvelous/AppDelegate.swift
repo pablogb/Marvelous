@@ -42,8 +42,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-    
-    
+}
+
+// This is not the best place for this class, but making a file just for this class seems kinda silly.
+class LightContentNavigationViewController: UINavigationController {
+    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        return .LightContent
+    }
 }
 
 

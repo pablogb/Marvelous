@@ -15,6 +15,7 @@ public class MarvelCharacter: MarvelEntity {
     override func populateFromJSON(json:JSON) {
         super.populateFromJSON(json)
         
+        name = json["name"].string
         desc = json["description"].string
     }
     
