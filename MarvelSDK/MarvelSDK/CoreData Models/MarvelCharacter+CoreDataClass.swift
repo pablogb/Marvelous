@@ -11,38 +11,34 @@ import CoreData
 import SwiftyJSON
 
 @objc(MarvelCharacter)
-public class MarvelCharacter: NSManagedObject {
-    func populateFromJSON(json:JSON) {
-        marvelId = json["id"].int64Value
+public class MarvelCharacter: MarvelEntity {
+    override func populateFromJSON(json:JSON) {
+        super.populateFromJSON(json)
         
-        name = json["name"].string
         desc = json["description"].string
-        
-        resourceURI = json["resourceURI"].string
-        
-        thumbnailBase = json["thumbnail"]["path"].string
-        thumbnailExtension = json["thumbnail"]["extension"].string
-        
-        let jsonURLArray = json["urls"].array
-        
-        if let jsonURLArray = jsonURLArray {
-            var urlArray = [LabeledURL]()
-            
-            for urlJSON in jsonURLArray {
-                if let url = NSURL(string: urlJSON["url"].stringValue) {
-                    urlArray.append(LabeledURL(url: url, label: urlJSON["type"].stringValue))
-                }
-            }
-            
-            urls = urlArray
-        }
-        
-        // TODO: Parse date
-        //modified = json["modified"]
     }
     
-    public func squareThumbURL() -> NSURL? {
-        if thumbnailBase == nil || thumbnailExtension == nil { return nil}
-        else { return NSURL(string: "\(thumbnailBase!)/standard_fantastic.\(thumbnailExtension!)") }
+    public func comics(limit limit:Int?, offset:Int?, completionHandler: (error:MarvelSDKError?, comics:[MarvelEntity]) -> Void) {
+        MarvelSDK.sharedInstance.entities(.MarvelEntity, path: "characters/\(marvelId)/comics", limit: limit, offset: offset, nameStartsWith: nil) { (error, entities:[MarvelEntity]) in
+            completionHandler(error: error, comics: entities)
+        }
+    }
+    
+    public func series(limit limit:Int?, offset:Int?, completionHandler: (error:MarvelSDKError?, series:[MarvelEntity]) -> Void) {
+        MarvelSDK.sharedInstance.entities(.MarvelEntity, path: "characters/\(marvelId)/series", limit: limit, offset: offset, nameStartsWith: nil) { (error, entities:[MarvelEntity]) in
+            completionHandler(error: error, series: entities)
+        }
+    }
+    
+    public func stories(limit limit:Int?, offset:Int?, completionHandler: (error:MarvelSDKError?, stories:[MarvelEntity]) -> Void) {
+        MarvelSDK.sharedInstance.entities(.MarvelEntity, path: "characters/\(marvelId)/stories", limit: limit, offset: offset, nameStartsWith: nil) { (error, entities:[MarvelEntity]) in
+            completionHandler(error: error, stories: entities)
+        }
+    }
+    
+    public func events(limit limit:Int?, offset:Int?, completionHandler: (error:MarvelSDKError?, events:[MarvelEntity]) -> Void) {
+        MarvelSDK.sharedInstance.entities(.MarvelEntity, path: "characters/\(marvelId)/events", limit: limit, offset: offset, nameStartsWith: nil) { (error, entities:[MarvelEntity]) in
+            completionHandler(error: error, events: entities)
+        }
     }
 }

@@ -132,7 +132,7 @@ public class MarvelSDK {
         }
     }
     
-    public func characters(limit limit:Int?, offset:Int?, nameStartsWith:String?, completionHandler: (error:MarvelSDKError?, characters:[MarvelCharacter]) -> Void) {
+    func entities<T: MarvelEntity>(entityType:EntityType, path:String, limit limit:Int?, offset:Int?, nameStartsWith:String?, completionHandler: (error:MarvelSDKError?, entities:[T]) -> Void) {
         var parameters = [String: AnyObject]()
         var shouldCache = true
         
@@ -143,7 +143,7 @@ public class MarvelSDK {
             shouldCache = false
         }
         
-        makeAPICall(.MarvelCharacter, path: "characters", parameters: parameters, shouldCache: shouldCache) { (statusCode, json, error, cachedResponse) in
+        makeAPICall(entityType, path: path, parameters: parameters, shouldCache: shouldCache) { (statusCode, json, error, cachedResponse) in
             if statusCode != 200 && cachedResponse == nil {
                 // An error occured and no data was returned (not even cached data).
                 let error:MarvelSDKError!
@@ -152,41 +152,49 @@ public class MarvelSDK {
                 else if statusCode == 429 { error = .RateLimitReached }
                 else { error = .InternalError }
                 
-                completionHandler(error: error, characters: [])
+                completionHandler(error: error, entities: [])
             } else if statusCode == 200 {
                 // We got a new response from the API. Parse, store in cache, and return.
                 let moc = CoreDataStack.sharedStack.context
-                var characters = [MarvelCharacter]()
                 
-                let characterJSONs = json!["data"]["results"]
+                var entities = [T]()
                 
-                for (index, characterJSON) in (characterJSONs.array?.enumerate())! {
-                    let character = MarvelCharacter(entity: MarvelCharacter.entity(), insertIntoManagedObjectContext: moc)
-                    character.populateFromJSON(characterJSON as! JSON)
-                    character.cachedOrder = Int16(index)
-                    character.cachedResponse = cachedResponse
+                let entityJSONs = json!["data"]["results"]
+                
+                for (index, entityJSON) in (entityJSONs.array?.enumerate())! {
+                    //let entity = T(entity: T.entity(), insertIntoManagedObjectContext: moc)
+                    let entity = T(context: moc)
+                    entity.populateFromJSON(entityJSON as! JSON)
+                    entity.cachedOrder = Int16(index)
+                    entity.cachedResponse = cachedResponse
                     
-                    characters.append(character)
+                    entities.append(entity)
                 }
                 
                 CoreDataStack.sharedStack.saveContext()
                 
-                completionHandler(error: nil, characters: characters)
+                completionHandler(error: nil, entities: entities)
             } else if let cachedResponse = cachedResponse {
                 // No new data, but we can retrive the results from the cached response.
                 let fetchRequest = NSFetchRequest(entityName: "MarvelCharacter") as NSFetchRequest
                 fetchRequest.predicate = NSPredicate(format: "cachedResponse = %@", cachedResponse)
                 fetchRequest.sortDescriptors = [NSSortDescriptor(key: "cachedOrder", ascending: true)]
                 
-                let fetchedObjects = (try? CoreDataStack.sharedStack.context.executeFetchRequest(fetchRequest)) as? [MarvelCharacter]
+                let fetchedObjects = (try? CoreDataStack.sharedStack.context.executeFetchRequest(fetchRequest)) as? [T]
                 
                 if let fetchedObjects = fetchedObjects {
-                    completionHandler(error: nil, characters: fetchedObjects)
+                    completionHandler(error: nil, entities: fetchedObjects)
                 } else {
                     // Something went wrong :(
-                    completionHandler(error: .InternalError, characters: [])
+                    completionHandler(error: .InternalError, entities: [])
                 }
             }
+        }
+    }
+    
+    public func characters(limit limit:Int?, offset:Int?, nameStartsWith:String?, completionHandler: (error:MarvelSDKError?, characters:[MarvelCharacter]) -> Void) {
+        entities(.MarvelCharacter, path: "characters", limit: limit, offset: offset, nameStartsWith: nameStartsWith) { (error, entities:[MarvelCharacter]) in
+            completionHandler(error: error, characters: entities)
         }
     }
     
