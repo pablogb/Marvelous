@@ -22,17 +22,22 @@ class CharacterListViewController: UIViewController {
     var loadingNext = false
     
     // Filter and search
+    let searchLimit = 100
+    let filterLimit = 50
     var filteredCharacters:[MarvelCharacter]? = nil
     var searchController = UISearchController(searchResultsController: nil)
     var searching = false
     var lastSearchText:String? = nil
     var searchTextTimer:NSTimer? = nil
+    var searchResultCharacters:[MarvelCharacter]? = nil
+    var searchResultString:String? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Configure searchController
         searchController.searchResultsUpdater = self
+        searchController.delegate = self
         searchController.dimsBackgroundDuringPresentation = false
         definesPresentationContext = true
         searchBarContainer.addSubview(searchController.searchBar)
@@ -161,7 +166,7 @@ extension CharacterListViewController: UICollectionViewDelegate, UICollectionVie
     }
 }
 
-extension CharacterListViewController: UISearchResultsUpdating {
+extension CharacterListViewController: UISearchControllerDelegate, UISearchResultsUpdating {
     func updateSearchResultsForSearchController(searchController: UISearchController) {
         let searchText = searchController.searchBar.text!
         // TODO: Filter when going forward, discard search when going back.
@@ -169,33 +174,34 @@ extension CharacterListViewController: UISearchResultsUpdating {
         lastSearchText = searchText
         
         if searchText.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) != "" {
-            searching = true
-            searchTextTimer = NSTimer.scheduledTimerWithTimeInterval(0.5, repeats: false) { [weak self] (timer) in
-                print("begin search for \(searchText)")
-                self?.searching = true
-                
-                MarvelSDK.sharedInstance.characters(limit: 3, offset: 0, nameStartsWith: searchText, completionHandler: { (error, characters) in
-                    if self?.lastSearchText == searchText {
-                        print("done searching for \(searchText), display results")
-                        self?.searching = false
-                        
-                        var newCharacters = characters
-                        if let filtered = self?.filteredCharacters {
-                            newCharacters.appendContentsOf(filtered)
+            // When returning from a presented view the search is triggered again, but the search string did not change.
+            if searchText != searchResultString {
+                searching = true
+                searchTextTimer = NSTimer.scheduledTimerWithTimeInterval(0.5, repeats: false) { [weak self] (timer) in
+                    print("begin search for \(searchText)")
+                    self?.searching = true
+                    
+                    MarvelSDK.sharedInstance.characters(limit: self?.searchLimit, offset: 0, nameStartsWith: searchText, completionHandler: { (error, characters) in
+                        if self?.lastSearchText == searchText {
+                            print("done searching for \(searchText), display results")
+                            self?.searching = false
+                            
+                            self?.searchResultString = searchText
+                            self?.searchResultCharacters = characters
+                            
+                            self?.updatedFilteredCharacters()
+                            
+                            dispatch_async(dispatch_get_main_queue(), {
+                                self?.collectionView.reloadData()
+                            })
+                        } else {
+                            print("done searching for \(searchText) but results are no longer valid")
                         }
-                        
-                        self?.filteredCharacters = newCharacters
-                        
-                        dispatch_async(dispatch_get_main_queue(), {
-                            self?.collectionView.reloadData()
-                        })
-                    } else {
-                        print("done searching for \(searchText) but results are no longer valid")
-                    }
-                })
+                    })
+                }
+                
+                updatedFilteredCharacters()
             }
-            
-            filteredCharacters = MarvelSDK.sharedInstance.filteredCharactersFromCache(searchText: searchText)
         } else {
             searching = false
             filteredCharacters = nil
@@ -204,5 +210,72 @@ extension CharacterListViewController: UISearchResultsUpdating {
         dispatch_async(dispatch_get_main_queue(), {
             self.collectionView.reloadData()
         })
+    }
+    
+    func updatedFilteredCharacters() {
+        if let lastSearchText = lastSearchText {
+            // Get the most recent characters from the cache.
+            let charactersFromCache = MarvelSDK.sharedInstance.filteredCharactersFromCache(searchText: lastSearchText, limit: filterLimit)
+            
+            // If all else fails, at least use the characters we can get from the cache.
+            var newFilteredCharacters = charactersFromCache
+            
+            // Try to use serach results if we have them.
+            if let searchResultString = searchResultString, let searchResultCharacters = searchResultCharacters {
+                // Check if the searchResults we have are still relevant to our current search.
+                if lastSearchText.hasPrefix(searchResultString) {
+                    var newSearchResults = searchResultCharacters
+                    // Search strings have the same prefix, but our current search is further along. We should filter searchResultCharacters according to the new search text.
+                    if searchResultString != lastSearchText {
+                        newSearchResults = []
+                        
+                        // Check if the name contains all words in the search string.
+                        let words = lastSearchText.componentsSeparatedByString(" ")
+                        for character in searchResultCharacters {
+                            var nameContainsAllWords = true
+                            for word in words {
+                                if character.name!.rangeOfString(word, options: [.DiacriticInsensitiveSearch, .CaseInsensitiveSearch]) == nil {
+                                    nameContainsAllWords = false
+                                    break
+                                }
+                            }
+                            if nameContainsAllWords {
+                                newSearchResults.append(character)
+                            }
+                        }
+                    }
+                    
+                    // Merge newSearchResults with charactersFromCache
+                    var addedIds = Set<Int64>()
+                    newFilteredCharacters = []
+                    
+                    for character in newSearchResults {
+                        if !addedIds.contains(character.marvelId) {
+                            newFilteredCharacters.append(character)
+                            addedIds.insert(character.marvelId)
+                        }
+                    }
+                    
+                    for character in charactersFromCache {
+                        if !addedIds.contains(character.marvelId) {
+                            newFilteredCharacters.append(character)
+                            addedIds.insert(character.marvelId)
+                        }
+                    }
+                    
+                }
+            }
+            
+            filteredCharacters = newFilteredCharacters
+        }
+    }
+    
+    func willDismissSearchController(searchController: UISearchController) {
+        searching = false
+        filteredCharacters = nil
+        
+        // Characters from searches are not cached, the SDK automatically clears them
+        // when initialized, but it's a good idea to also clear them here.
+        MarvelSDK.sharedInstance.clearUncachedCharacters()
     }
 }

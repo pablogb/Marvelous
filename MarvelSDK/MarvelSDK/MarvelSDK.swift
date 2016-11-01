@@ -25,6 +25,11 @@ public class MarvelSDK {
         assert(MarvelSDK.publicAPIKey != nil && MarvelSDK.privateAPIKey != nil, "You must set MarvelSDK.publicAPIKey and MarvelSDK.privateAPIKey before using the SDK.")
         publicKey = MarvelSDK.publicAPIKey
         privateKey = MarvelSDK.privateAPIKey
+        
+        // Clean up the cache.
+        // TODO: Clear old entries from the cache.
+        
+        clearUncachedCharacters()
     }
     
     /**
@@ -161,12 +166,14 @@ public class MarvelSDK {
                 
                 let entityJSONs = json!["data"]["results"]
                 
+                let now = NSDate()
                 for (index, entityJSON) in (entityJSONs.array?.enumerate())! {
                     //let entity = T(entity: T.entity(), insertIntoManagedObjectContext: moc)
                     let entity = T(context: moc)
                     entity.populateFromJSON(entityJSON as! JSON)
                     entity.cachedOrder = Int16(index)
                     entity.cachedResponse = cachedResponse
+                    entity.cacheDate = now
                     
                     entities.append(entity)
                 }
@@ -198,17 +205,19 @@ public class MarvelSDK {
         }
     }
     
-    public func filteredCharactersFromCache(searchText searchText:String) -> [MarvelCharacter] {
+    public func filteredCharactersFromCache(searchText searchText:String, limit:Int = 50) -> [MarvelCharacter] {
         let fetchRequest = NSFetchRequest(entityName: "MarvelCharacter") as NSFetchRequest
         
         // Generate predicate for word-by-word search.
         let words = searchText.componentsSeparatedByString(" ")
         
-        var format = "cachedResponse != nil "
+        //var format = "cachedResponse != nil "
+        var format = ""
         var arguments:[String] = []
         for (index, word) in words.enumerate() {
             if word != "" {
-                format += "AND %K CONTAINS[cd] %@"
+                if index == 0 { format += "%K CONTAINS[cd] %@" }
+                else { format += "AND %K CONTAINS[cd] %@" }
                 
                 arguments.append("name")
                 arguments.append(word)
@@ -217,15 +226,41 @@ public class MarvelSDK {
         
         let predicate = NSPredicate(format: format, argumentArray: arguments)
         fetchRequest.predicate = predicate
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
-        fetchRequest.fetchLimit = 3
+        // Entries in the cache might be repeatad, prioritize entries in a cache (less likely to be repeated) then prioritize by date (newer entries from search results are more likely to be relevant)
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "cachedResponse", ascending: false), NSSortDescriptor(key: "cacheDate", ascending: false), NSSortDescriptor(key: "name", ascending: true)]
+        fetchRequest.fetchLimit = limit
                 
         do {
             let fetchedObjects = try CoreDataStack.sharedStack.context.executeFetchRequest(fetchRequest)
-            return (fetchedObjects as? [MarvelCharacter]) ?? []
+            
+            let characters = (fetchedObjects as? [MarvelCharacter]) ?? []
+            var addedIds = Set<Int64>()
+            var uniqueCharacters:[MarvelCharacter] = []
+            
+            for character in characters {
+                if !addedIds.contains(character.marvelId) {
+                    uniqueCharacters.append(character)
+                    addedIds.insert(character.marvelId)
+                }
+            }
+            
+            return uniqueCharacters
         } catch let error as NSError {
             print("Could not fetch results: \(error)")
             return []
+        }
+    }
+    
+    public func clearUncachedCharacters() {
+        let fetchRequest = NSFetchRequest(entityName: "MarvelCharacter") as NSFetchRequest
+        fetchRequest.predicate = NSPredicate(format: "cachedResponse = nil")
+        
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        
+        do {
+            try CoreDataStack.sharedStack.context.executeRequest(deleteRequest)
+        } catch let error as NSError {
+            print("Could not delete objects associated to cache: \(error.localizedDescription)")
         }
     }
 }

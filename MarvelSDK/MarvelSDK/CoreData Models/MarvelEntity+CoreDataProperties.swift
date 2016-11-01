@@ -14,6 +14,7 @@ import CoreData
 extension MarvelEntity {
     
     @NSManaged public var cachedOrder: Int16
+    @NSManaged public var cacheDate: NSDate?
     @NSManaged public var marvelId: Int64
     @NSManaged public var name: String?
     @NSManaged public var resourceURI: String?
