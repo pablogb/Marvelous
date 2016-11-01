@@ -144,33 +144,46 @@ class CharacterListViewController: UIViewController {
             
             MarvelSDK.sharedInstance.characters(limit: limit, offset: offset, nameStartsWith: nil) { [weak self] (error, characters) in
                 if let vc = self {
-                    if characters.count == vc.limit { vc.moreCharacters = true }
-                    else { vc.moreCharacters = false }
-                    
-                    vc.offset += vc.limit
-                    
-                    let oldCount = vc.characters.count
-                    
-                    vc.characters.appendContentsOf(characters)
-                    
-                    dispatch_async(dispatch_get_main_queue(), {
-                        var indexPaths:[NSIndexPath] = []
-                        
-                        for (index, _) in characters.enumerate() {
-                            indexPaths.append(NSIndexPath(forRow: oldCount + index, inSection: 0))
+                    if let error = error {
+                        let message:String?
+                        switch(error) {
+                            case .NoResponse: message = "Could not establish connection with the server. Please check your internet connection and try again."
+                            case .RateLimitReached: message = "The API rate limit was reached. Please try again later."
+                            case .InternalError: message = "An unexpected error ocurred. Please try again later."
                         }
                         
-                        if vc.moreCharacters == false {
-                            // Remove the loading cell and add new cells.
-                            vc.collectionView?.performBatchUpdates({
-                                vc.collectionView?.deleteItemsAtIndexPaths([NSIndexPath(forRow: oldCount, inSection: 0)])
+                        let alertController = UIAlertController(title: "Error", message: message, preferredStyle: .Alert)
+                        alertController.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+                        self?.presentViewController(alertController, animated: true, completion: nil)
+                    } else {
+                        if characters.count == vc.limit { vc.moreCharacters = true }
+                        else { vc.moreCharacters = false }
+                        
+                        vc.offset += vc.limit
+                        
+                        let oldCount = vc.characters.count
+                        
+                        vc.characters.appendContentsOf(characters)
+                        
+                        dispatch_async(dispatch_get_main_queue(), {
+                            var indexPaths:[NSIndexPath] = []
+                            
+                            for (index, _) in characters.enumerate() {
+                                indexPaths.append(NSIndexPath(forRow: oldCount + index, inSection: 0))
+                            }
+                            
+                            if vc.moreCharacters == false {
+                                // Remove the loading cell and add new cells.
+                                vc.collectionView?.performBatchUpdates({
+                                    vc.collectionView?.deleteItemsAtIndexPaths([NSIndexPath(forRow: oldCount, inSection: 0)])
+                                    vc.collectionView?.insertItemsAtIndexPaths(indexPaths)
+                                    }, completion: nil)
+                            } else {
+                                // Just add new cells.
                                 vc.collectionView?.insertItemsAtIndexPaths(indexPaths)
-                            }, completion: nil)
-                        } else {
-                            // Just add new cells.
-                            vc.collectionView?.insertItemsAtIndexPaths(indexPaths)
-                        }
-                    })
+                            }
+                        })
+                    }
                     
                     vc.loadingNext = false
                 }
@@ -275,14 +288,28 @@ extension CharacterListViewController: UISearchControllerDelegate, UISearchResul
                         if self?.lastSearchText == searchText {
                             self?.searching = false
                             
+                            // Set search results even if there is an error to prevent the search from retrying automatically.
                             self?.searchResultString = searchText
                             self?.searchResultCharacters = characters
                             
-                            self?.updatedFilteredCharacters()
-                            
-                            dispatch_async(dispatch_get_main_queue(), {
-                                self?.collectionView.reloadData()
-                            })
+                            if let error = error {
+                                let message:String?
+                                switch(error) {
+                                    case .NoResponse: message = "Could not establish connection with the server. Please check your internet connection and try again."
+                                    case .RateLimitReached: message = "The API rate limit was reached. Please try again later."
+                                    case .InternalError: message = "An unexpected error ocurred. Please try again later."
+                                }
+                                
+                                let alertController = UIAlertController(title: "Error", message: message, preferredStyle: .Alert)
+                                alertController.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+                                self?.presentViewController(alertController, animated: true, completion: nil)
+                            } else {
+                                self?.updatedFilteredCharacters()
+                                
+                                dispatch_async(dispatch_get_main_queue(), {
+                                    self?.collectionView.reloadData()
+                                })
+                            }
                         }
                     })
                 }

@@ -55,33 +55,46 @@ class MarvelEntityListViewController: UICollectionViewController {
             
             fetchEntities?(limit: limit, offset: offset) { [weak self] (error, entities) in
                 if let vc = self {
-                    if entities.count == vc.limit { vc.moreEntities = true }
-                    else { vc.moreEntities = false }
-                    
-                    vc.offset += vc.limit
-                    
-                    let oldCount = vc.entities.count
-                    
-                    vc.entities.appendContentsOf(entities)
-                    
-                    dispatch_async(dispatch_get_main_queue(), {
-                        var indexPaths:[NSIndexPath] = []
-                        
-                        for (index, _) in entities.enumerate() {
-                            indexPaths.append(NSIndexPath(forRow: oldCount + index, inSection: 0))
+                    if let error = error {
+                        let message:String?
+                        switch(error) {
+                            case .NoResponse: message = "Could not establish connection with the server. Please check your internet connection and try again."
+                            case .RateLimitReached: message = "The API rate limit was reached. Please try again later."
+                            case .InternalError: message = "An unexpected error ocurred. Please try again later."
                         }
                         
-                        if vc.moreEntities == false {
-                            // Remove the loading cell and add new cells.
-                            vc.collectionView?.performBatchUpdates({
-                                vc.collectionView?.deleteItemsAtIndexPaths([NSIndexPath(forRow: oldCount, inSection: 0)])
+                        let alertController = UIAlertController(title: "Error", message: message, preferredStyle: .Alert)
+                        alertController.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+                        self?.presentViewController(alertController, animated: true, completion: nil)
+                    } else {
+                        if entities.count == vc.limit { vc.moreEntities = true }
+                        else { vc.moreEntities = false }
+                        
+                        vc.offset += vc.limit
+                        
+                        let oldCount = vc.entities.count
+                        
+                        vc.entities.appendContentsOf(entities)
+                        
+                        dispatch_async(dispatch_get_main_queue(), {
+                            var indexPaths:[NSIndexPath] = []
+                            
+                            for (index, _) in entities.enumerate() {
+                                indexPaths.append(NSIndexPath(forRow: oldCount + index, inSection: 0))
+                            }
+                            
+                            if vc.moreEntities == false {
+                                // Remove the loading cell and add new cells.
+                                vc.collectionView?.performBatchUpdates({
+                                    vc.collectionView?.deleteItemsAtIndexPaths([NSIndexPath(forRow: oldCount, inSection: 0)])
+                                    vc.collectionView?.insertItemsAtIndexPaths(indexPaths)
+                                    }, completion: nil)
+                            } else {
+                                // Just add new cells.
                                 vc.collectionView?.insertItemsAtIndexPaths(indexPaths)
-                                }, completion: nil)
-                        } else {
-                            // Just add new cells.
-                            vc.collectionView?.insertItemsAtIndexPaths(indexPaths)
-                        }
-                    })
+                            }
+                        })
+                    }
                     
                     vc.loadingNext = false
                 }
