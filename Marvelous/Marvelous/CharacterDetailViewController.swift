@@ -12,6 +12,7 @@ import MarvelSDK
 import SDWebImage
 import SafariServices
 
+/// Displays all the details for a specified character.
 class CharacterDetailViewController: UIViewController {
     @IBOutlet weak var imageView:UIImageView!
     @IBOutlet weak var nameLabel:UILabel!
@@ -25,6 +26,10 @@ class CharacterDetailViewController: UIViewController {
         configure()
     }
     
+    /**
+     Configures the view controller to display the details of the specified character.
+
+     */
     func configure() {
         if let character = character {
             let smallImageURL = character.squareThumbURL()
@@ -100,7 +105,11 @@ class CharacterDetailViewController: UIViewController {
             }
         }
     }
-    
+    /**
+     Opens the Marvel.com url for the character in a `SFSafariViewController`.
+     
+     - Parameter sender: The button that initiated the event.
+     */
     @IBAction func openURL(sender: UIButton) {
         if let url = detailURL {
             let safariViewController = SFSafariViewController(URL: url)

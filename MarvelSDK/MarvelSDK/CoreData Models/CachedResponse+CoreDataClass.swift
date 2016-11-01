@@ -16,7 +16,8 @@ enum EntityType: String {
 
 @objc(CachedResponse)
 public class CachedResponse: NSManagedObject {
-    // Deletes all objects associated with this cache, and deletes itself.
+    
+    /// Deletes all objects associated with this cache, and deletes itself.
     func invalidate() {
         // Delete associated objects.
         let fetchRequest = NSFetchRequest(entityName: entityType!) as NSFetchRequest

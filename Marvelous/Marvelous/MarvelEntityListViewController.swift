@@ -12,10 +12,12 @@ import MarvelSDK
 
 typealias EntityFetchCallback = ((error:MarvelSDKError?, entities:[MarvelEntity]) -> Void)
 
+/// This protocol allows MarvelEntityListViewController to notify an object when one of its cells is tapped.
 protocol MarvelEntitiyListViewControllerDelegate: class {
     func didSelectEntity(entity:MarvelEntity)
 }
 
+/// Displays a list of entities in a collection view.
 class MarvelEntityListViewController: UICollectionViewController {
     var entities:[MarvelEntity] = []
     
@@ -49,6 +51,7 @@ class MarvelEntityListViewController: UICollectionViewController {
         backgroundLabel.text = emptyStateText
     }
     
+    /// Retrieves and displays the the next page of entities from the API. 
     func loadNextEntities() {
         if loadingNext == false {
             loadingNext = true
@@ -145,7 +148,13 @@ extension MarvelEntityListViewController { // UICollectionViewDelegate, UICollec
         }
     
     }
-    
+    /**
+     Returns the entity corresponding to the specified `indexPath`
+     
+     - Parameter indexPath: An indexPath for the `collectionView`
+     
+     - Returns: The entity associated to that `indexPath` or nil if there is no entity for that `indexPath`.
+     */
     func entityFor(indexPath indexPath:NSIndexPath) -> MarvelEntity? {
         if indexPath.row == entities.count { // Display loading cell.
             return nil

@@ -8,8 +8,9 @@
 
 import CoreData
 
-// TODO: Better error handleing.
+// TODO: Better error handling.
 
+/// Manages all the set up for Core Data.
 class CoreDataStack {
     
     let modelName = "ResponseCache"

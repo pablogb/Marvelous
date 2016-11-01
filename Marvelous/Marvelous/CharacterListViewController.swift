@@ -9,6 +9,7 @@
 import UIKit
 import MarvelSDK
 
+/// Displays a list of characters in a collection view.
 class CharacterListViewController: UIViewController {
     @IBOutlet weak var collectionView:UICollectionView!
     @IBOutlet weak var searchBarContainer:UIView!
@@ -118,9 +119,7 @@ class CharacterListViewController: UIViewController {
         searchController.searchBar.sizeToFit()
         
         // Calculate best cell size for view width. 
-        
-        
-        
+
         let flowLayout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
         let s = flowLayout.minimumInteritemSpacing // Inter cell spacing
         let x = collectionView.bounds.width - flowLayout.sectionInset.left - flowLayout.sectionInset.right // Useable width
@@ -138,6 +137,8 @@ class CharacterListViewController: UIViewController {
         }
     }
     
+
+    /// Retrieves and displays the the next page of characters from the API.
     func loadNextCharacters() {
         if loadingNext == false {
             loadingNext = true
@@ -204,7 +205,6 @@ extension CharacterListViewController: UICollectionViewDelegate, UICollectionVie
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        
         let character = characterFor(indexPath: indexPath)
         if let character = character { // Return entity cell.
             let cell = collectionView.dequeueReusableCellWithReuseIdentifier("entityCell", forIndexPath: indexPath) as! EntityCollectionViewCell
@@ -249,6 +249,13 @@ extension CharacterListViewController: UICollectionViewDelegate, UICollectionVie
         }
     }
     
+    /**
+     Returns the character corresponding to the specified `indexPath`
+     
+     - Parameter indexPath: An indexPath for the `collectionView`
+     
+     - Returns: The character associated to that `indexPath` or nil if there is no character for that `indexPath`.
+     */
     func characterFor(indexPath indexPath:NSIndexPath) -> MarvelCharacter? {
         if let filteredCharacters = filteredCharacters {
             var arrayIndex = indexPath.row
@@ -273,7 +280,7 @@ extension CharacterListViewController: UICollectionViewDelegate, UICollectionVie
 extension CharacterListViewController: UISearchControllerDelegate, UISearchResultsUpdating {
     func updateSearchResultsForSearchController(searchController: UISearchController) {
         let searchText = searchController.searchBar.text!
-        // TODO: Filter when going forward, discard search when going back.
+
         searchTextTimer?.invalidate()
         lastSearchText = searchText
         
@@ -326,6 +333,12 @@ extension CharacterListViewController: UISearchControllerDelegate, UISearchResul
         })
     }
     
+    /**
+     Updates the `filteredCharacter` array that is used for displaying search results. This method merges
+     the results from the last call to the search API (if they are still relevant) and the characters
+     that were retrieved from the cache.
+
+     */
     func updatedFilteredCharacters() {
         if let lastSearchText = lastSearchText {
             // Get the most recent characters from the cache.

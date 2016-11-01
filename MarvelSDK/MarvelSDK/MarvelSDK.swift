@@ -40,6 +40,17 @@ public class MarvelSDK {
      */
     public static let sharedInstance = MarvelSDK()
     
+    
+    /**
+     Calls the Marvel API with the specified parameters.
+     
+     - Parameter: entityType The type of entity expected from the API results, used by the caching system to find entities beloging to a cache.
+     - Parameter: path The API path you wish to query.
+     - Parameter: parameters Parameters for the API call.
+     - Parameter: shouldCache Determines whether the results should be cached or not.
+     - Parameter: completionHandler The completion handler to be called when the server response is received.
+     
+     */
     func makeAPICall(entityType:EntityType, path:String, parameters:[String: AnyObject]?, shouldCache:Bool = true, completionHandler: (statusCode:Int?, json:JSON?, error:ErrorType?, cachedResponse:CachedResponse?) -> Void) {
         
         var parameters:[String: AnyObject]! = parameters
@@ -114,6 +125,15 @@ public class MarvelSDK {
         }
     }
     
+    /**
+     Returns a `CachedResponse` object for the given path and parameters, if available. Returns `nil` if no cache is available.
+     
+     - Parameter: path The path of the request.
+     - Parameter: parameters Parameters used for the request.
+     
+     - Returns: A `CachedResponse` object if this request is in the cache, `nil` if not.
+     
+     */
     func cachedResponse(forPath path:String, parameters:String) -> CachedResponse? {
         let fetchRequest = NSFetchRequest(entityName: "CachedResponse") as NSFetchRequest
         fetchRequest.predicate = NSPredicate(format: "path = %@ and parameters = %@", path, parameters)
@@ -128,7 +148,20 @@ public class MarvelSDK {
         }
     }
     
+    /**
+     Retrieves a collection of entities from an API endpoint.
+     
+     - Parameter: T The Core Data type of the entity returned by the end point.
+     - Parameter: entityType The type of entity expected from the API results, used by the caching system to find entities beloging to a cache.
+     - Parameter: path The API path you wish to query.
+     - Parameter: limit The maximum number of objects that should be returned by the API.
+     - Parameter: offset The offset from the first result, used by the API for paging.
+     - Parameter: nameStartsWith A string to filter the entities by.
+     - Parameter: completionHandler The completion handler to be called when the server response is received.
+    
+     */
     func entities<T: MarvelEntity>(entityType:EntityType, path:String, limit limit:Int?, offset:Int?, nameStartsWith:String?, completionHandler: (error:MarvelSDKError?, entities:[T]) -> Void) {
+        // TODO: Validate that limit and offset are within bounds.
         var parameters = [String: AnyObject]()
         var shouldCache = true
         
@@ -190,12 +223,29 @@ public class MarvelSDK {
         }
     }
     
+    /**
+     Retrieves a collection of characters from the API.
+     
+     - Parameter limit: The maximum number of objects that should be returned by the API.
+     - Parameter offset: The offset from the first result, used by the API for paging.
+     - Parameter nameStartsWith: A string to filter the entities by.
+     - Parameter completionHandler: The completion handler to be called when the server response is received.
+     
+     */
     public func characters(limit limit:Int?, offset:Int?, nameStartsWith:String?, completionHandler: (error:MarvelSDKError?, characters:[MarvelCharacter]) -> Void) {
         entities(.MarvelCharacter, path: "characters", limit: limit, offset: offset, nameStartsWith: nameStartsWith) { (error, entities:[MarvelCharacter]) in
             completionHandler(error: error, characters: entities)
         }
     }
     
+    /**
+     Retrieves a collection of characters found in the cache whose name matched `searchText`
+     
+     - Parameter searchText: The text to search for. The text is separated into words and the character name must contain each word.
+     - Parameter limit: The maximum number of characters that should be returned
+     
+     - Returns: An array of characters whose name matches `searchText`
+     */
     public func filteredCharactersFromCache(searchText searchText:String, limit:Int = 50) -> [MarvelCharacter] {
         let fetchRequest = NSFetchRequest(entityName: "MarvelCharacter") as NSFetchRequest
         
@@ -242,6 +292,8 @@ public class MarvelSDK {
         }
     }
     
+
+    /// Removes Characters found in the Core Data cache which are not associated to any cache.
     public func clearUncachedCharacters() {
         let fetchRequest = NSFetchRequest(entityName: "MarvelCharacter") as NSFetchRequest
         fetchRequest.predicate = NSPredicate(format: "cachedResponse = nil")
