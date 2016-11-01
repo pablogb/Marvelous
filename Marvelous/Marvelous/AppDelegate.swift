@@ -51,4 +51,9 @@ class LightContentNavigationViewController: UINavigationController {
     }
 }
 
-
+// Same as above, not the best place, but making a file just for this class seems kinda silly.
+extension UIViewAnimationCurve {
+    func toOptions() -> UIViewAnimationOptions {
+        return UIViewAnimationOptions(rawValue: UInt(rawValue << 16))
+    }
+}

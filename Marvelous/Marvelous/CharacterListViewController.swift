@@ -16,7 +16,7 @@ class CharacterListViewController: UIViewController {
     var characters:[MarvelCharacter] = []
     
     // Paging
-    let limit = 100
+    let limit = 30
     var offset = 0
     var moreCharacters = true
     var loadingNext = false
@@ -32,6 +32,13 @@ class CharacterListViewController: UIViewController {
     var searchResultCharacters:[MarvelCharacter]? = nil
     var searchResultString:String? = nil
     
+    // Layout
+    var cellSize:CGFloat = 150.0
+    
+    // Keyboard layout
+    var bottomConstraintConstant:CGFloat = 0.0
+    @IBOutlet weak var scrollViewBottomConstraint:NSLayoutConstraint!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -46,6 +53,54 @@ class CharacterListViewController: UIViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        let notificationCenter = NSNotificationCenter.defaultCenter()
+        notificationCenter.addObserver(self, selector: #selector(CharacterListViewController.keyboardWillShow(_:)), name: UIKeyboardWillShowNotification, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(CharacterListViewController.keyboardWillHide(_:)), name: UIKeyboardWillHideNotification, object: nil)
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        let notificationCenter = NSNotificationCenter.defaultCenter()
+        notificationCenter.removeObserver(self, name: UIKeyboardWillShowNotification, object: nil)
+        notificationCenter.removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
+    }
+    
+    func keyboardWillShow(notification:NSNotification) {
+        let info = notification.userInfo
+        var keyboardRect = (info?[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
+        keyboardRect = view.convertRect(keyboardRect, fromView: nil)
+        
+        var newConstant = bottomConstraintConstant + keyboardRect.size.height
+        
+        if let tabBarController = self.tabBarController {
+            newConstant -= tabBarController.tabBar.bounds.height
+        }
+        
+        if newConstant != scrollViewBottomConstraint.constant {
+            scrollViewBottomConstraint.constant = newConstant
+            
+            let animationDuration = (info?[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue as NSTimeInterval
+            let animationCurve = UIViewAnimationCurve(rawValue: (info?[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber).integerValue)
+            
+            UIView.animateWithDuration(animationDuration, delay: 0.0, options: animationCurve!.toOptions(), animations: { () -> Void in
+                self.view.layoutIfNeeded()
+                }, completion: nil)
+        }
+    }
+    
+    func keyboardWillHide(notification:NSNotification) {
+        if scrollViewBottomConstraint.constant != bottomConstraintConstant {
+            scrollViewBottomConstraint.constant = bottomConstraintConstant
+            
+            let info = notification.userInfo
+            let animationDuration = (info?[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue as NSTimeInterval
+            let animationCurve = UIViewAnimationCurve(rawValue: (info?[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber).integerValue)
+            
+            UIView.animateWithDuration(animationDuration, delay: 0.0, options: animationCurve!.toOptions(), animations: { () -> Void in
+                self.view.layoutIfNeeded()
+                }, completion: nil)
+        }
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
@@ -57,8 +112,33 @@ class CharacterListViewController: UIViewController {
         }
     }
     
-    func loadNextCharacters() {
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         
+        searchController.searchBar.sizeToFit()
+        
+        // Calculate best cell size for view width. 
+        
+        
+        
+        let flowLayout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
+        let s = flowLayout.minimumInteritemSpacing // Inter cell spacing
+        let x = collectionView.bounds.width - flowLayout.sectionInset.left - flowLayout.sectionInset.right // Useable width
+        let w = CGFloat(150.0) // Target cell width (minimum)
+        
+        let n = floor((x+s)/(w+s)) // Number of cells we can fit on the screen, given by w*n + s*(n-1) = x
+        
+        let nw = floor((x-s*(n-1))/n) // This is the width we need to fit n cells in the screen according to the same formula.
+        
+        if nw != cellSize {
+            cellSize = nw
+            dispatch_async(dispatch_get_main_queue(), { 
+                self.collectionView.collectionViewLayout.invalidateLayout()
+            })
+        }
+    }
+    
+    func loadNextCharacters() {
         if loadingNext == false {
             loadingNext = true
             
@@ -100,7 +180,7 @@ class CharacterListViewController: UIViewController {
     }
 }
 
-extension CharacterListViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+extension CharacterListViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if let filteredCharacters = filteredCharacters {
             if searching { return filteredCharacters.count + 1}
@@ -119,16 +199,32 @@ extension CharacterListViewController: UICollectionViewDelegate, UICollectionVie
             cell.configure(entity: character)
             
             return cell
-        } else { // Return Loading cell.
-            let cell = collectionView.dequeueReusableCellWithReuseIdentifier("loadingCell", forIndexPath: indexPath) as! LoadingCollectionViewCell
-            cell.activityIndicator.startAnimating()
-            
-            if filteredCharacters == nil { // If this is the end of page loading cell, then start loading the next page.
+        } else {
+            if searching {  // Return Searching cell.
+                let cell = collectionView.dequeueReusableCellWithReuseIdentifier("searchingCell", forIndexPath: indexPath) as! LoadingCollectionViewCell
+                cell.activityIndicator.startAnimating()
+                
+                return cell
+            } else {  // Return Loading cell.
+                let cell = collectionView.dequeueReusableCellWithReuseIdentifier("loadingCell", forIndexPath: indexPath) as! LoadingCollectionViewCell
+                cell.activityIndicator.startAnimating()
+                
                 loadNextCharacters()
+                
+                return cell
             }
-            
-            return cell
         }
+    }
+    
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+        if searching && indexPath.row == 0 {
+            let flowLayout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
+            let usableWidth = collectionView.bounds.width - flowLayout.sectionInset.left - flowLayout.sectionInset.right // Useable width
+            
+            return CGSize(width: usableWidth, height: 60.0)
+        }
+        
+        return CGSize(width: cellSize, height: cellSize)
     }
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
