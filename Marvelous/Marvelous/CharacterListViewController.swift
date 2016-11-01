@@ -64,13 +64,8 @@ class CharacterListViewController: UIViewController {
             
             MarvelSDK.sharedInstance.characters(limit: limit, offset: offset, nameStartsWith: nil) { [weak self] (error, characters) in
                 if let vc = self {
-                    if characters.count == vc.limit {
-                        print("more characters left")
-                        vc.moreCharacters = true
-                    } else {
-                        print("no more characters")
-                        vc.moreCharacters = false
-                    }
+                    if characters.count == vc.limit { vc.moreCharacters = true }
+                    else { vc.moreCharacters = false }
                     
                     vc.offset += vc.limit
                     
@@ -178,12 +173,10 @@ extension CharacterListViewController: UISearchControllerDelegate, UISearchResul
             if searchText != searchResultString {
                 searching = true
                 searchTextTimer = NSTimer.scheduledTimerWithTimeInterval(0.5, repeats: false) { [weak self] (timer) in
-                    print("begin search for \(searchText)")
                     self?.searching = true
                     
                     MarvelSDK.sharedInstance.characters(limit: self?.searchLimit, offset: 0, nameStartsWith: searchText, completionHandler: { (error, characters) in
                         if self?.lastSearchText == searchText {
-                            print("done searching for \(searchText), display results")
                             self?.searching = false
                             
                             self?.searchResultString = searchText
@@ -194,8 +187,6 @@ extension CharacterListViewController: UISearchControllerDelegate, UISearchResul
                             dispatch_async(dispatch_get_main_queue(), {
                                 self?.collectionView.reloadData()
                             })
-                        } else {
-                            print("done searching for \(searchText) but results are no longer valid")
                         }
                     })
                 }

@@ -60,9 +60,7 @@ public class MarvelSDK {
         
         if let cached = cached {
             // We have a cached response, check if it is still valid.
-            print("cache is \(cached.cacheDate?.timeIntervalSinceNow) seconds old")
             if cached.cacheDate?.timeIntervalSinceNow > -86400 { // Less than 24 hours, use the cache.
-                print("returned cached results")
                 completionHandler(statusCode: nil, json: nil, error: nil, cachedResponse: cached)
                 return
             } else if let etag = cached.etag {
@@ -87,7 +85,6 @@ public class MarvelSDK {
                 cached?.cacheDate = now
                 CoreDataStack.sharedStack.saveContext()
                 
-                print("cache is still valid, extend it, and return cached results")
                 completionHandler(statusCode: nil, json: nil, error: nil, cachedResponse: cached)
             } else if response.response?.statusCode == 200 { // New data, invalidate the prvious cache, create a new one, and return.
                 if let data = response.result.value {
@@ -106,15 +103,12 @@ public class MarvelSDK {
                         cached!.etag = json["etag"].string
                     }
                     
-                    print("new data returned")
                     completionHandler(statusCode: 200, json: json, error: nil, cachedResponse: cached)
                 } else {
                     // Failed to parse JSON data, treat is as an internal error.
-                    print("failed to parse json data")
                     completionHandler(statusCode: 500, json: nil, error: nil, cachedResponse: cached)
                 }
             } else { // An error occured, send error data and cached version if available.
-                print("an error occured")
                 completionHandler(statusCode: response.response?.statusCode, json: nil, error: response.result.error, cachedResponse: cached)
             }
         }
@@ -127,9 +121,6 @@ public class MarvelSDK {
         
         do {
             let fetchedObjects = try CoreDataStack.sharedStack.context.executeFetchRequest(fetchRequest)
-            
-            if let _ = fetchedObjects.first as? CachedResponse { print("found previous cache") } else { print("no previous cache") }
-            
             return fetchedObjects.first as? CachedResponse
         } catch let error as NSError {
             print("Could not fetch results: \(error)")

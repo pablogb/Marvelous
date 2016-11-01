@@ -55,13 +55,8 @@ class MarvelEntityListViewController: UICollectionViewController {
             
             fetchEntities?(limit: limit, offset: offset) { [weak self] (error, entities) in
                 if let vc = self {
-                    if entities.count == vc.limit {
-                        print("more entities left")
-                        vc.moreEntities = true
-                    } else {
-                        print("no more entities")
-                        vc.moreEntities = false
-                    }
+                    if entities.count == vc.limit { vc.moreEntities = true }
+                    else { vc.moreEntities = false }
                     
                     vc.offset += vc.limit
                     
